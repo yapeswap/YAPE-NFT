@@ -1,6 +1,6 @@
 # yape-nft
 
-![alt text](https://github.com/[0xSumna]/[yape-nft]/blob/[main]/Test/23.png?raw=true)
+![alt text](https://github.com/0xSumna/yape-nft/blob/main/Test/23.png?raw=true)
 
 
 

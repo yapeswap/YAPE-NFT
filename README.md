@@ -1,6 +1,8 @@
 # yape-nft
 
 
+Test/23.png
+
 This is our plugin that will generate art for NFTs
 It will likely have chainlink VRF to choose which patterns are going to be distributed. 
 

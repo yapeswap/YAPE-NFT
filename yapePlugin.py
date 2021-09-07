@@ -94,6 +94,17 @@ class Monkey():
         else:
             self.hasAcc = False 
 
+    def hatValidate(self):
+        #pick one of the three to make true at random
+        if(self.hatAcc):
+            choice = numpy.random.choice(hatAssist, p=hatChoice)
+            self.cmdrAcc = hatTable[choice][0]
+            self.duragAcc = hatTable[choice][1]
+            self.cansAcc = hatTable[choice][2]
+
+    def setSelfName(self, n):
+        self.name = n
+
 
 def analytics(monkies):
     accessoryCount = 0
@@ -125,6 +136,7 @@ def analytics(monkies):
         pats.append(x.coinPat, x.hairpat, x.faceEarsPat, x.cansOuterPat, x.cansInnerPat)
         hats.append(x.cmdrOuterPat, x.cmdrOuterStarPat, x.cmdrInnerStarPat, x.duragPat)
         grad.append(x.shadesPat, x.canePat, x.eyeMouthPat)
+
 
 
     def hatValidate(self):
@@ -501,6 +513,7 @@ def yapePlugin(timg, tdrawable):
         with open("/home/notes/Programming/yape-nft/Metadata/" + str(monkey.ident) + ".json", "w") as outfile:
             outfile.write(json_object)
         outfile.close()
+
 
 register(
     "yapePlugin",

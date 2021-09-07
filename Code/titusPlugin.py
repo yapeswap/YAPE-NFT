@@ -2,162 +2,172 @@
 
 import random
 import numpy
+import json
 from gimpfu import *
+
+#  ___    ___ ________  ________  _______   ________  ___       __   ________  ________   
+# |\  \  /  /|\   __  \|\   __  \|\  ___ \ |\   ____\|\  \     |\  \|\   __  \|\   __  \  
+# \ \  \/  / | \  \|\  \ \  \|\  \ \   __/|\ \  \___|\ \  \    \ \  \ \  \|\  \ \  \|\  \ 
+#  \ \    / / \ \   __  \ \   ____\ \  \_|/_\ \_____  \ \  \  __\ \  \ \   __  \ \   ____\
+#   \/  /  /   \ \  \ \  \ \  \___|\ \  \_|\ \|____|\  \ \  \|\__\_\  \ \  \ \  \ \  \___|
+# __/  / /      \ \__\ \__\ \__\    \ \_______\____\_\  \ \____________\ \__\ \__\ \__\   
+#|\___/ /        \|__|\|__|\|__|     \|_______|\_________\|____________|\|__|\|__|\|__|   
+#\|___|/                                      \|_________|                                
+
+#Todo
+
+#Tend to zen garden.
+
+#Will run gas cost tests to make sure
+#Finish Analytics File
 
 ceil = 474
 hatCeil = 14
 gradCeil = 29
 
-monkies = []
-
 elements = [True, False]
+
+#Lord forgive me for I have sinned
+hatTable = [(True, False, False),(False, True, False),(False, False, True)]
+hatAssist = [0, 1, 2]
+hatChoice = [0.15, 0.25, 0.6,]
+
 hatWeight = [0.1, 0.9]
-fangsWeight = [0.2, 0.8]
-hatWeight = [0.05, 0.95]
+shadesWeight = [0.1, 0.9]
+caneWeight = [0.1, 0.9]
+fangsWeight = [0.1, 0.9]
 
-def monkeyGen(id):
+patNames = []
+hatNames = []
+gradNames = []
 
-    patNum = random.sample(range(ceil), 4)
-    accNum = random.sample(range(hatCeil), 3)
-    gradNum = random.randint(0, gradCeil)
+#Make it to where you can only have one of cmdr durag or cans then make it pick randomly between the three
+class Monkey():
+    def __init__(self, ident, coinPat, hairPat, faceEarsPat, eyeMouthPat, canePat, cmdrOuterPat, cmdrOuterStarPat, cmdrInnerStarPat, duragPat, cansInnerPat, cansOuterPat, shadesPat):
     
-    newMonkey = (id+1, 
-                patNum[0],
-                patNum[1],
-                patNum[2],
-                patNum[3],
-                gradNum,
-                accNum[0],
-                accNum[1],
-                accNum[2],
-                numpy.random.choice(elements, p=hatWeight),
-                numpy.random.choice(elements, p=fangsWeight),
-                numpy.random.choice(elements, p=hatWeight)
-                )
+        self.ident = ident
+        self.name = ""
+        self.coinNum = coinPat
+        self.hairNum = hairPat
+        self.faceEarsNum = faceEarsPat
+        self.eyeMouthNum = eyeMouthPat
+        self.hatAcc = numpy.random.choice(elements, p=hatWeight)
+        self.cmdrAcc = False
+        self.duragAcc = False
+        self.cansAcc = False
 
-    if newMonkey not in monkies:
-        monkies.append(newMonkey)
-    else:
-        monkeyGen(id-1)
+        self.shadesAcc = numpy.random.choice(elements, p=shadesWeight)
+        self.caneAcc = numpy.random.choice(elements, p=caneWeight)
+        self.fangsAcc = numpy.random.choice(elements, p=fangsWeight)
 
-def titusGen(monkey):
-    ident = str(monkey[0])
+        #METADATA: Numbers of Accessories, to be mapped to names and given rarity. 
+        self.cmdrOuterNum = cmdrOuterPat
+        self.cmdrOuterStarNum = cmdrOuterStarPat
+        self.cmdrInnerStarNum = cmdrInnerStarPat
+        self.duragNum = duragPat
+        self.cansOuterNum = cansOuterPat
+        self.cansInnerNum = cansInnerPat
+        self.shadesNum = shadesPat
+        self.caneNum = canePat
 
-    coinPattern = "pat"+str(monkey[1])+".png"
-    hairPattern = "pat"+str(monkey[2])+".png"
-    faceEarsPattern = "pat"+str(monkey[3])+".png"
-    eyePattern = "pat"+str(monkey[4])+".png"
+        #Translated to Names Later
+        self.coinPat = "pat"+str(coinPat)+".png"
+        self.hairPat = "pat"+str(hairPat)+".png"
+        self.faceEarsPat = "pat"+str(faceEarsPat)+".png"
+        self.cansOuterPat = "pat"+str(cansOuterPat)+".png"
+        self.cansInnerPat = "pat"+str(cansInnerPat)+".png"
 
-    canePattern = "grad"+str(monkey[5])+".png"
-    hatOuterPattern = "hat"+str(monkey[6])+".png"
-    hatOuterStarPattern = "hat"+str(monkey[7])+".png"
-    hatInnerStarPattern = "hat"+str(monkey[8])+".png"
+        #Also Translated to names. 
+        self.cmdrOuterPat = "hat"+str(cmdrOuterPat)+".png"
+        self.cmdrOuterStarPat = "hat"+str(cmdrOuterStarPat)+".png"
+        self.cmdrInnerStarPat = "hat"+str(cmdrInnerStarPat)+".png"
+        self.duragPat = "hat"+str(duragPat)+".png"
 
-    hatAcc = monkey[9]
-    fangsAcc = monkey[10]
-    caneAcc = monkey[11]
+        #Canes and Shades can be the same, see gradNum
+        self.shadesPat = "grad"+str(shadesPat)+".png"
+        self.canePat = "grad"+str(canePat)+".png"
+        self.eyeMouthPat = "grad"+str(eyeMouthPat)+".png"
 
-        
-
-    image = pdb.gimp_file_load("/home/notes/Programming/yape-nft/Images/titus.xcf", "titus.xcf")
-
-
-    image.active_layer = image.layers[10]
-    drawable = image.active_layer
-    pdb.gimp_image_select_item(image,CHANNEL_OP_REPLACE,image.vectors[8])
-    pdb.gimp_context_set_pattern(coinPattern)
-    pdb.gimp_edit_bucket_fill(drawable,2,0,100,0,FALSE,0,0)
-
-    image.active_layer = image.layers[9]
-    drawable = image.active_layer
-    pdb.gimp_image_select_item(image,CHANNEL_OP_REPLACE,image.vectors[7])
-    pdb.gimp_context_set_pattern(hairPattern)
-    pdb.gimp_edit_bucket_fill(drawable,2,0,100,0,FALSE,0,0)
-
-    image.active_layer = image.layers[8]
-    drawable = image.active_layer
-    pdb.gimp_image_select_item(image,CHANNEL_OP_REPLACE,image.vectors[6])
-    pdb.gimp_context_set_pattern(faceEarsPattern)
-    pdb.gimp_edit_bucket_fill(drawable,2,0,100,0,FALSE,0,0)
-
-    #Skip layer 7 EYEOUTER
-
-    image.active_layer = image.layers[6]
-    drawable = image.active_layer
-    pdb.gimp_image_select_item(image,CHANNEL_OP_REPLACE,image.vectors[4])
-    pdb.gimp_context_set_pattern(eyePattern)
-    pdb.gimp_edit_bucket_fill(drawable,2,0,100,0,FALSE,0,0)
-
-    if(caneAcc):
-        image.layers[3].visible = True
-        image.active_layer = image.layers[4]
-        drawable = image.active_layer
-        pdb.gimp_image_select_item(image,CHANNEL_OP_REPLACE,image.vectors[3])
-        pdb.gimp_context_set_pattern(canePattern)
-        pdb.gimp_edit_bucket_fill(drawable,2,0,100,0,FALSE,0,0)
-    else:
-        image.layers[4].visible = False
-        image.layers[3].visible = False
-
-    if(fangsAcc):
-        image.layers[2].visible = True
-    else:
-        image.layers[2].visible = False
-
-    if(hatAcc):
-        image.active_layer = image.layers[1]
-        drawable = image.active_layer
-        pdb.gimp_image_select_item(image,CHANNEL_OP_REPLACE,image.vectors[2])
-        pdb.gimp_context_set_pattern(hatOuterPattern)
-        pdb.gimp_edit_bucket_fill(drawable,2,0,100,0,FALSE,0,0)
-
-        image.active_layer = image.layers[1]
-        drawable = image.active_layer
-        pdb.gimp_image_select_item(image,CHANNEL_OP_REPLACE,image.vectors[1])
-        pdb.gimp_context_set_pattern(hatOuterStarPattern)
-        pdb.gimp_edit_bucket_fill(drawable,2,0,100,0,FALSE,0,0)
-        
-        image.active_layer = image.layers[1]
-        drawable = image.active_layer
-        pdb.gimp_image_select_item(image,CHANNEL_OP_REPLACE,image.vectors[0])
-        pdb.gimp_context_set_pattern(hatInnerStarPattern)
-        pdb.gimp_edit_bucket_fill(drawable,2,0,100,0,FALSE,0,0)
-
-    else:
-        image.layers[1].visible = False
-        image.layers[0].visible = False
-
-    image.active_layer = image.layers[0]
-    drawable = image.active_layer
-
-    image.add_layer(pdb.gimp_layer_new_from_visible(image, image, "vis"))
-
-    image.active_layer = image.layers[0]
-    drawable = image.active_layer
-
-    pdb.file_png_save(image, drawable, "/home/notes/Programming/yape-nft/Test/" + ident + ".png", ident + ".png", 0, 0, 0, 0, 0, 1, 1)
+        self.whatHat = ""
+        if(self.hatAcc == True or self.shadesAcc == True or self.caneAcc == True or self.fangsAcc == True):
+            self.hasAcc = True
+        else:
+            self.hasAcc = False 
 
 
-def titusPlugin(timg, tdrawable):
-    for i in range(1,100):
-        monkeyGen(i)
+def analytics(monkies):
+    accessoryCount = 0
+    hatsCount = 0
+    shadesCount = 0
+    fangsCount = 0
+    caneCount = 0
 
-    for monkey in monkies:
-        titusGen(monkey)
+    pats = []
+    hats = []
+    grad = []
+
+    for x in range(ceil):
+        pats.append((x, 0))
+    for x in range(hatCeil):
+        hats.append((x, 0))
+    for x in range(gradCeil):
+        grad.append((x, 0))
+
+    for x in monkies
+        if x.hasAcc:
+            accessoryCount += 1
+        if x.shadesAcc:
+            shadesCount += 1
+        if x.fangsAcc:
+            fangsCount += 1
+        if x.caneAcc:
+            caneCount += 1
+        pats.append(x.coinPat, x.hairpat, x.faceEarsPat, x.cansOuterPat, x.cansInnerPat)
+        hats.append(x.cmdrOuterPat, x.cmdrOuterStarPat, x.cmdrInnerStarPat, x.duragPat)
+        grad.append(x.shadesPat, x.canePat, x.eyeMouthPat)
 
 
-register(
-    "titusPlugin",
-    "Generates test titus",
-    "Generates test titus",
-    "0xSumna",
-    "0xSumna",
-    "2021",
-    "<Image>/Filters/Artistic/Titus",
-    "",
-    [],
-    [],
-    titusPlugin)
+
+    def hatValidate(self):
+        #pick one of the three to make true at random
+        if(self.hatAcc):
+            choice = numpy.random.choice(hatAssist, p=hatChoice)
+            self.cmdrAcc = hatTable[choice][0]
+            self.duragAcc = hatTable[choice][1]
+            self.cansAcc = hatTable[choice][2]
+            if cmdrAcc:
+                self.whatHat = "Commander"
+            if ragAcc:
+                self.whatHat = "Rag"
+            if cansAcc:
+                self.whatHat = "Cans"
+
+    def setSelfName(self, n):
+        self.name = n
 
 
-main()
+def monkeyGen(ident):
+
+    patNum = random.sample(range(ceil), 6)
+    accNum = random.sample(range(hatCeil), 4)
+    gradNum = random.randint(0, gradCeil)
+
+    #Need to generate a lot more numbers, need some ceilings and some more patterns, also need to ensure none of the numbers match for 
+
+    newMonkey = Monkey(
+                    ident,
+                    patNum[0],
+                    patNum[1],
+                    patNum[2],
+                    gradNum,
+                    gradNum,
+                    accNum[0],
+                    accNum[1],
+                    accNum[2],
+                    accNum[3],
+                    patNum[4],
+                    patNum[5],
+                    gradNum
+                    )
+
+    return newMonkey

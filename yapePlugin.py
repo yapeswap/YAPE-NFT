@@ -94,16 +94,7 @@ class Monkey():
         else:
             self.hasAcc = False 
 
-    def hatValidate(self):
-        #pick one of the three to make true at random
-        if(self.hatAcc):
-            choice = numpy.random.choice(hatAssist, p=hatChoice)
-            self.cmdrAcc = hatTable[choice][0]
-            self.duragAcc = hatTable[choice][1]
-            self.cansAcc = hatTable[choice][2]
 
-    def setSelfName(self, n):
-        self.name = n
 
 
 def analytics(monkies):

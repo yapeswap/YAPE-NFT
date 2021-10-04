@@ -51,7 +51,7 @@ class Monkey():
         self.hairNum = hairPat
         self.faceEarsNum = faceEarsPat
         self.eyeMouthNum = eyeMouthPat
-        self.hatAcc = numpy.random.choice(elements, p=hatWeight)
+        self.hatAcc = numpy.random.choice(elements, p=hatWeight
         self.cmdrAcc = False
         self.duragAcc = False
         self.cansAcc = False

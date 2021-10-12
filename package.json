@@ -1,0 +1,22 @@
+{
+  "name": "yape-nft",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yapeswap/yape-nft.git"
+  },
+  "author": "0xSumna",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/yapeswap/yape-nft/issues"
+  },
+  "homepage": "https://github.com/yapeswap/yape-nft#readme",
+  "dependencies": {
+    "hardhat": "^2.6.5"
+  }
+}

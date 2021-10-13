@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/yapeswap/yape-nft#readme",
   "dependencies": {
+    "@alch/alchemy-web3": "^1.1.4",
     "@openzeppelin/contracts": "^4.3.2",
     "hardhat": "^2.6.5"
   },
